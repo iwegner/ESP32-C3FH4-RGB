@@ -17,7 +17,7 @@
 #define BRIGHTNESS 50 // Set BRIGHTNESS to about 1/5 (max = 255)
 
 // Declare our NeoPixel strip object:
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRBW + NEO_KHZ800);
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 // Argument 1 = Number of pixels in NeoPixel strip
 // Argument 2 = Arduino pin number (most are valid)
 // Argument 3 = Pixel type flags, add together as needed:
@@ -42,10 +42,11 @@ void setup() {
 
 void loop() {
   // Fill along the length of the strip in various colors...
-  colorWipe(strip.Color(255,   0,   0)     , 50); // Red
-  colorWipe(strip.Color(  0, 255,   0)     , 50); // Green
-  colorWipe(strip.Color(  0,   0, 255)     , 50); // Blue
-  colorWipe(strip.Color(  0,   0,   0, 255), 50); // True white (not RGB white)
+  colorWipe(strip.Color(255,   0,   0), 50); // Red
+  colorWipe(strip.Color(  0, 255,   0), 50); // Green
+  colorWipe(strip.Color(  0,   0, 255), 50); // Blue
+  colorWipe(strip.Color(  255,   255,   255), 50); // (RGB white)
+  //colorWipe(strip.Color(  0,   0,   0, 255), 50); // True white (not RGB white)
 
   whiteOverRainbow(75, 5);
 
@@ -82,7 +83,7 @@ void whiteOverRainbow(int whiteSpeed, int whiteLength) {
     for(int i=0; i<strip.numPixels(); i++) {  // For each pixel in strip...
       if(((i >= tail) && (i <= head)) ||      //  If between head & tail...
          ((tail > head) && ((i >= tail) || (i <= head)))) {
-        strip.setPixelColor(i, strip.Color(0, 0, 0, 255)); // Set white
+        strip.setPixelColor(i, strip.Color(255, 255, 255)); // Set white
       } else {                                             // else set rainbow
         int pixelHue = firstPixelHue + (i * 65536L / strip.numPixels());
         strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(pixelHue)));
@@ -111,13 +112,13 @@ void whiteOverRainbow(int whiteSpeed, int whiteLength) {
 void pulseWhite(uint8_t wait) {
   for(int j=0; j<256; j++) { // Ramp up from 0 to 255
     // Fill entire strip with white at gamma-corrected brightness level 'j':
-    strip.fill(strip.Color(0, 0, 0, strip.gamma8(j)));
+    strip.fill(strip.Color(strip.gamma8(j), strip.gamma8(j), strip.gamma8(j)));
     strip.show();
     delay(wait);
   }
 
   for(int j=255; j>=0; j--) { // Ramp down from 255 to 0
-    strip.fill(strip.Color(0, 0, 0, strip.gamma8(j)));
+    strip.fill(strip.Color(strip.gamma8(j), strip.gamma8(j), strip.gamma8(j)));
     strip.show();
     delay(wait);
   }
@@ -163,12 +164,12 @@ void rainbowFade2White(int wait, int rainbowLoops, int whiteLoops) {
   for(int k=0; k<whiteLoops; k++) {
     for(int j=0; j<256; j++) { // Ramp up 0 to 255
       // Fill entire strip with white at gamma-corrected brightness level 'j':
-      strip.fill(strip.Color(0, 0, 0, strip.gamma8(j)));
+      strip.fill(strip.Color(strip.gamma8(j), strip.gamma8(j), strip.gamma8(j)));
       strip.show();
     }
     delay(1000); // Pause 1 second
     for(int j=255; j>=0; j--) { // Ramp down 255 to 0
-      strip.fill(strip.Color(0, 0, 0, strip.gamma8(j)));
+      strip.fill(strip.Color(strip.gamma8(j), strip.gamma8(j), strip.gamma8(j)));
       strip.show();
     }
   }
