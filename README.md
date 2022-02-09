@@ -7,43 +7,57 @@ https://zadig.akeo.ie/
 
 
 
+# General Flashing Instructions:
+* Install driver with zadig as mentioned above.
+* Install Arduino IDE and install espressif resources by adding line 
+"https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_dev_index.json"
+to Additional Boards Manager URLs in Arduino IDE Files / Preferences.
+* Via Arduino IDE Tools/Board / Board Manager search for ESP32 and choose Espressif Systems version 2.0.2 to install it.
+* Install ESP32 Digital RGB LED Drivers and Adafruit NeoPixel via option tools / Manage Libraries in Arduino IDE.
+* Setup connection to connect to Board ESP32C3 Dev and com port which is assocuiated to USB Serial Device, not jtag (see Device Manager on Win10). Other settings see settings.png.
 
-Setup connection to connect to Board ESP32C3 Dev and com port which is assocuiated to USB Serial Device, not jtag (See Device Manager on Win10). Other settings see settings.png.
+## Upload sketch from Arduino IDE:
+Hold down B button on board, press R button and release again but keep on pressing B, trigger Arduino IDE to upload sketch, keep B pressed until Arduino IDE says that it's connected. Then you can release B button.
 
-Upload sketch from Arduino IDE:
-Hold down B, press R and release again but keep on pressing B, trigger Arduino IDE to upload sketch,  until Arduino IDE says that its connected, then you can release B
+Serial works for me with "CDC enable on boot" set to true.
 
-Serial works for me with "CDC enable on boot" set to true
+## Concerning code initially provided by 01Space:
+* RGBWstranstest.ino:
+I had to change RGBWstrandtest.ino to not choose NEO_GRBW for intitialization of strip / led matrix and instead initialize with NEO_GRB. SPecs of the WS2812b in spec of board also mention only RGB but no white sub-led. With this modification the code runs just like the code that the board was shipped with.
+BTW: the youtube video referenced by the comments on BG site shows the misalignment of LED color when using original code.
 
-NEO_GRB shows right colors, NEO_GRBW doesn't work as WS2812b don't have white sub leds.
+* strandtest_wheel.ino:
+After the modifications mentioned above and some alignment of the setPixelColor() calls the colors of the leds also look as expected.
+
+* BlinkWithoutDelay.ino:
+Haven't tested as other two programs worked. 
 
 
-Specs from BG (German):
-Genaue Details:
-Was ist C3FH4 RGB?
+# Specs from BG website
+What is C3FH4 RGB? 
 
-C3FH4 RGB verfügt über ein ultrakompaktes Design mit einem Risc-v 32-Bit-Single-Core-Prozessor bei 160 MHz auf einer Platine, integriertem 400 KB SRAM und 4 MB Flash , integriert mit 2,4-GHz-WLAN und unterstützt Bluetooth 5 ( LE) mit branchenführender HF-Leistung und geringem Stromverbrauch. Durch die Kombination von RSA-3072-basiertem Secure Boot und der AES-128-XTS-basierten Flash-Verschlüsselung bietet es eine sicherere Möglichkeit, Bluetooth-Sicherheitsbedenken zu beantworten.
-Mit geringem Stromverbrauch: Es ist ideal für alle platzbeschränkten oder batteriebetriebenen Geräte wie Wearables, medizinische Geräte, Sensoren und andere IoT-Geräte. und vollständig kompatibel mit Arduin, MicroPython, ESP32-IDF und anderen gängigen Entwicklungsplattformen schnell verschiedene Anwendungen erstellen.
-HOHE INTEGRATION: C3FH4 RGB Einschließlich 2 Kanäle von 5V -> 3,3 V DC / DC, GPIOx11, programmierbares RGB-Licht x25, Taste x2, fein abgestimmte HF-Schaltung, die eine stabile und zuverlässige drahtlose Kommunikation bietet.
+C3FH4 RGB features an ultra-compact design with one risc-v 32-bit single core processor at 160MHz on a PCB, built-in 400 KB SRAM and 4 MB Flash , integrated with 2.4 GHz Wi Fi and supporting long-distance Bluetooth 5 (LE), with industry-leading RF performance and low power consumption.By combining RSA-3072-based secure boot and the AES-128-XTS-based flash encryption, offers a more secure way to answer the Bluetooth security concerns.
+With low power consumption: It is ideal for any space-constrained or battery-powered devices such as wearables, medical devices, sensors, and other IoT devices.and fully compatible with Arduin, MicroPython, ESP32-IDF, and other mainstream development platforms to quickly build various applications.
+HIGH INTEGRATION: C3FH4 RGB Including 2 channels of 5V - > 3.3V DC / DC, GPIOx11, programmable RGB light x25, button x2, finely tuned RF circuit, providing stable and reliable wireless communication. 
 
-Merkmale:
+Features:
 
-ESP32-C3FH4 (2,4 GHz Wi-Fi und unterstützt Bluetooth 5 (LE) über lange Distanzen)
-eingebauter 400 KB SRAM und 4 MB Flash
-USB Type-C (USB unterwegs (OTG))
-Inklusive 2 Kanäle 5V - > 3.3V DC / DC
-Integriertes 5X5 ws2812b-1515 (GPIO8) und 2 Tasten (GPIO9 und CHIP_EN)
-3V Stromversorgung LED und Status LED(GPIO10)
-Keramikantenne
+ESP32-C3FH4 (2.4GHz Wi-Fi and supporting long-distance Bluetooth 5 (LE))
+built-in 400 KB SRAM and 4 MB Flash
+USB Type-C(USB OnThe-Go (OTG))
+Including 2 channels of 5V - > 3.3V DC / DC
+Integrated 5X5 ws2812b-1515(GPIO8) and 2 buttons(GPIO9 and CHIP_EN)
+3V power LED and status LED(GPIO10)
+Ceramic Antenna
 
-Größe Gewicht:
-Größe: 21 x 18 mm
-Gewicht: 2,3 g
+Size & Weight:
+ 
+Size: 21 x 18 mm
+Weight: 2.3g
 
-UNTERLAGEN:
-https://github.com/01Space/ESP32-C3FH4-RGB
+DOCUMENTS:
+https://github.com/01Space/ESP32-C3FH4-RGB 
 
-Paket beinhaltet:
+Package includes:
 
-1 x LED-Platine
-(Hinweis: Die Münze ist nicht im Lieferumfang enthalten)
+1 x LED board
