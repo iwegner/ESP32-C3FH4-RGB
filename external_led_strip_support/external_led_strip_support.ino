@@ -156,7 +156,7 @@ void PulseWhite(Adafruit_NeoPixel* strip, uint8_t wait_ms)
     }
 }
 
-//! Showing rainbow and a white
+//! Showing rainbow fade and a white fade
 //! \param strip strip to be modified
 //! \param wait_ms speed for animation
 //! \param rainbow_loops amount of rainbow loops
@@ -206,7 +206,7 @@ void RainbowFade2White(Adafruit_NeoPixel* strip, int wait_ms, int rainbow_loops,
         }
     }
 
-
+    // White fade
     for(int k=0; k<white_loops; k++) {
         for(int j=0; j<256; j++) { // Ramp up 0 to 255
             // Fill entire strip with white at gamma-corrected brightness level 'j':
@@ -220,7 +220,7 @@ void RainbowFade2White(Adafruit_NeoPixel* strip, int wait_ms, int rainbow_loops,
         }
     }
 
-    delay(500); // Pause 1/2 second
+    //delay(500); // Pause 1/2 second
 }
 
 
@@ -265,32 +265,32 @@ void loop()
     // Individual LED animations should be as short as possible to allow changing modes
     switch (mode_index) {
         case 0:
-            ColorWipe(&internal_strip, internal_strip.Color(255,   0,   0), 10); // Red
+            //ColorWipe(&internal_strip, internal_strip.Color(255,   0,   0), 10); // Red
             ColorWipe(&external_strip, external_strip.Color(255,   0,   0), 10); // Red
             break;
         case 1:
-            ColorWipe(&internal_strip, internal_strip.Color(  0, 255,   0), 10); // Green
+            //ColorWipe(&internal_strip, internal_strip.Color(  0, 255,   0), 10); // Green
             ColorWipe(&external_strip, external_strip.Color(  0, 255,   0), 10); // Green
             break;
         case 2:
-            ColorWipe(&internal_strip, internal_strip.Color(  0,   0, 255), 10); // Blue
+            //ColorWipe(&internal_strip, internal_strip.Color(  0,   0, 255), 10); // Blue
             ColorWipe(&external_strip, external_strip.Color(  0,   0, 255), 10); // Blue
             break;
         case 3:
-            ColorWipe(&internal_strip, internal_strip.Color(  255,   255,   255), 10); // (RGB white)
+            //ColorWipe(&internal_strip, internal_strip.Color(  255,   255,   255), 10); // (RGB white)
             ColorWipe(&external_strip, external_strip.Color(  255,   255,   255), 10); // (RGB white)
             break;
         case 4:
-            WhiteOverRainbow(&internal_strip, 50, 5);
+            //WhiteOverRainbow(&internal_strip, 50, 5);
             WhiteOverRainbow(&external_strip, 50, 5);
             break;
         case 5:
-            PulseWhite(&internal_strip, 2);
+            //PulseWhite(&internal_strip, 2);
             PulseWhite(&external_strip, 2);
             break;
         case 6:
-            RainbowFade2White(&internal_strip, 2, 1, 1);
-            RainbowFade2White(&external_strip, 2, 2, 1);
+            //RainbowFade2White(&internal_strip, 2, 1, 1);
+            RainbowFade2White(&external_strip, 5, 2, 0);
             break;
         default: 
             Serial.println("Exceeded mode! Check implementation.");
