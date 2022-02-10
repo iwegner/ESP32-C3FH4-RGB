@@ -19,7 +19,8 @@ to Additional Boards Manager URLs in Arduino IDE Files / Preferences.
 ## Upload sketch from Arduino IDE:
 Hold down B button on board, press R button and release again but keep on pressing B, trigger Arduino IDE to upload sketch, keep B pressed until Arduino IDE says that it's connected. Then you can release B button.
 
-Serial works for me with "CDC enable on boot" set to true.
+Read but not checked yet: 
+Serial works with "CDC enable on boot" set to true.
 
 ## Concerning code initially provided by 01Space:
 * RGBWstranstest.ino:
@@ -32,6 +33,8 @@ After the modifications mentioned above and some alignment of the setPixelColor(
 * BlinkWithoutDelay.ino:
 Haven't tested as other two programs worked. 
 
+* Documentation on chip:
+https://www.espressif.com/sites/default/files/documentation/esp32-c3_datasheet_en.pdf
 
 # Specs from BG website
 What is C3FH4 RGB? 
