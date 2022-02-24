@@ -33,7 +33,7 @@
 
 // Number of LEDs attached to board
 #define INTERNAL_LED_COUNT  25
-#define EXTERNAL_LED_COUNT  53 
+#define EXTERNAL_LED_COUNT  63//53 in infinity mirror and 5 in each eye 
 
 // NeoPixel brightness, 0 (min) to 255 (max)
 #define INTERNAL_BRIGHTNESS 50 // Set BRIGHTNESS to about 1/5 (max = 255)
@@ -46,7 +46,7 @@ Adafruit_NeoPixel external_strip(EXTERNAL_LED_COUNT, EXTERNAL_LED_PIN, NEO_GRB +
 
 
 int mode_index = 0;             //!< variable to loop through different modes
-const int NUMBER_OF_MODES = 7;  //!< number of modes
+const int NUMBER_OF_MODES = 5;  //!< number of modes
 
 
 //! Fill strip pixels one after another with a color. Strip is NOT cleared first.
@@ -94,11 +94,11 @@ void WhiteOverRainbow(Adafruit_NeoPixel* strip, unsigned int white_speed, unsign
         white_length = strip->numPixels() - 1;
     }
 
-    int      head          = white_length - 1;
-    int      tail          = 0;
-    int      loops         = 3;
-    int      loop_num       = 0;
-    uint32_t last_time      = millis();
+    int      head            = white_length - 1;
+    int      tail            = 0;
+    int      loops           = 1;
+    int      loop_num        = 0;
+    uint32_t last_time       = millis();
     uint32_t first_pixel_hue = 0;
 
     for(;;) { // Repeat forever (or until a 'break' or 'return')
@@ -223,6 +223,38 @@ void RainbowFade2White(Adafruit_NeoPixel* strip, int wait_ms, int rainbow_loops,
     //delay(500); // Pause 1/2 second
 }
 
+//! Showing rainbow
+//! \param strip strip to be modified
+//! \param wait_ms speed for animation
+void Rainbow(Adafruit_NeoPixel* strip, int wait_ms) 
+{
+    if (nullptr == strip) {
+        return;
+    }
+
+    // Hue of first pixel runs 'rainbow_loops' complete loops through the color
+    // wheel. Color wheel has a range of 65536 but it's OK if we roll over, so
+    // just count from 0 to rainbow_loops*65536, using steps of 256 so we
+    // advance around the wheel at a decent clip.
+    for(uint32_t first_pixel_hue = 0; first_pixel_hue < 65536; first_pixel_hue += 256) {
+        for(int i = 0; i < strip->numPixels(); i++) { // For each pixel in strip...
+
+            // Offset pixel hue by an amount to make one full revolution of the
+            // color wheel (range of 65536) along the length of the strip
+            // (strip.numPixels() steps):
+            uint32_t pixel_hue = first_pixel_hue + (i * 65536L / strip->numPixels());
+
+            // strip.ColorHSV() can take 1 or 3 arguments: a hue (0 to 65535) or
+            // optionally add saturation and value (brightness) (each 0 to 255).
+            // Here we're using just the three-argument variant, though the
+            // second value (saturation) is a constant 255.
+            strip->setPixelColor(i, strip->gamma32(strip->ColorHSV(pixel_hue, 255, 255)));
+        }
+
+        strip->show();
+        delay(wait_ms);
+    }
+}
 
 void setup()
 {
@@ -270,30 +302,20 @@ void loop()
             break;
         case 1:
             //ColorWipe(&internal_strip, internal_strip.Color(  0, 255,   0), 10); // Green
-            ColorWipe(&external_strip, external_strip.Color(  0, 255,   0), 10); // Green
+            ColorWipe(&external_strip, external_strip.Color(0, 255,   0), 10); // Green
             break;
         case 2:
             //ColorWipe(&internal_strip, internal_strip.Color(  0,   0, 255), 10); // Blue
-            ColorWipe(&external_strip, external_strip.Color(  0,   0, 255), 10); // Blue
+            ColorWipe(&external_strip, external_strip.Color(0,   0, 255), 10); // Blue
             break;
         case 3:
             //ColorWipe(&internal_strip, internal_strip.Color(  255,   255,   255), 10); // (RGB white)
             ColorWipe(&external_strip, external_strip.Color(  255,   255,   255), 10); // (RGB white)
             break;
         case 4:
-            //WhiteOverRainbow(&internal_strip, 50, 5);
-            WhiteOverRainbow(&external_strip, 50, 5);
-            break;
-        case 5:
-            //PulseWhite(&internal_strip, 2);
-            PulseWhite(&external_strip, 2);
-            break;
-        case 6:
-            //RainbowFade2White(&internal_strip, 2, 1, 1);
-            RainbowFade2White(&external_strip, 5, 2, 0);
+            Rainbow(&external_strip, 5);
             break;
         default: 
             Serial.println("Exceeded mode! Check implementation.");
     }
 }
-
