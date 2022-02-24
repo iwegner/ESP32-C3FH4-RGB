@@ -33,6 +33,8 @@
 
 // Number of LEDs attached to board
 #define INTERNAL_LED_COUNT  25
+#define EXTERNAL_INFINITY_MIRROR_LED_COUNT 53
+#define EXTERNAL_EYE_LED_COUNT 5
 #define EXTERNAL_LED_COUNT  63//53 in infinity mirror and 5 in each eye 
 
 // NeoPixel brightness, 0 (min) to 255 (max)
@@ -41,12 +43,12 @@
 
 
 // Declare our NeoPixel strip objects:
-Adafruit_NeoPixel internal_strip(INTERNAL_LED_COUNT, INTERNAL_LED_PIN, NEO_GRB + NEO_KHZ800);
+//Adafruit_NeoPixel internal_strip(INTERNAL_LED_COUNT, INTERNAL_LED_PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel external_strip(EXTERNAL_LED_COUNT, EXTERNAL_LED_PIN, NEO_GRB + NEO_KHZ800);
 
 
 int mode_index = 0;             //!< variable to loop through different modes
-const int NUMBER_OF_MODES = 5;  //!< number of modes
+const int NUMBER_OF_MODES = 6;  //!< number of modes
 
 
 //! Fill strip pixels one after another with a color. Strip is NOT cleared first.
@@ -66,20 +68,20 @@ void ColorWipe(Adafruit_NeoPixel* strip, uint32_t color, int wait_ms = 0)
     }
 }
 
-//! Display a number [0-9] with internal leds with given color
-//! \param strip strip to be modified
-//! \param color single 'packed' 32-bit value, which you can get by calling strip->Color(red, green, blue)
-//! \param number one digit number [0-9]
-void ColorNumber(Adafruit_NeoPixel* strip, uint32_t color, int number) 
-{
-    if (nullptr == strip) {
-        return;
-    }
-    for(int i=0; i<strip->numPixels(); i++) {   // For each pixel in strip...
-        strip->setPixelColor(i, color);         //  Set pixel's color (in RAM)
-        strip->show();                          //  Update strip to match
-    }
-}
+// //! Display a number [0-9] with internal leds with given color
+// //! \param strip strip to be modified
+// //! \param color single 'packed' 32-bit value, which you can get by calling strip->Color(red, green, blue)
+// //! \param number one digit number [0-9]
+// void ColorNumber(Adafruit_NeoPixel* strip, uint32_t color, int number) 
+// {
+//     if (nullptr == strip) {
+//         return;
+//     }
+//     for(int i=0; i<strip->numPixels(); i++) {   // For each pixel in strip...
+//         strip->setPixelColor(i, color);         //  Set pixel's color (in RAM)
+//         strip->show();                          //  Update strip to match
+//     }
+// }
 
 //! Displays a rainbow over pixels and a moving white strip
 //! \param strip strip to be modified
@@ -223,7 +225,7 @@ void RainbowFade2White(Adafruit_NeoPixel* strip, int wait_ms, int rainbow_loops,
     //delay(500); // Pause 1/2 second
 }
 
-//! Showing rainbow
+//! Showing rainbow colors
 //! \param strip strip to be modified
 //! \param wait_ms speed for animation
 void Rainbow(Adafruit_NeoPixel* strip, int wait_ms) 
@@ -256,6 +258,45 @@ void Rainbow(Adafruit_NeoPixel* strip, int wait_ms)
     }
 }
 
+//! Show moving stripes so that it looks like a gear rotating
+//! \param strip strip to be modified
+//! \param color color to be shown during animation
+//! \param wait_ms speed for animation
+void Gears(Adafruit_NeoPixel* strip, uint32_t color, int wait_ms)
+{
+    if (nullptr == strip) {
+        return;
+    }
+    // set eyes to the color
+    for (int i = EXTERNAL_INFINITY_MIRROR_LED_COUNT; i < EXTERNAL_INFINITY_MIRROR_LED_COUNT + (EXTERNAL_EYE_LED_COUNT*2); i++) {
+        strip->setPixelColor(i, color);
+    }
+    strip->show();
+        
+    const int skip_width = 5; //!< how many leds shall be skipped
+    unsigned int counter = 0;
+    //unsigned int gear_animaton_counter = 6;
+    bool on = false;
+    // only do in infinity mirror
+    for ( unsigned int gear_animaton_counter = 0; gear_animaton_counter < 10; gear_animaton_counter++){
+        for (int i = 0; i < EXTERNAL_INFINITY_MIRROR_LED_COUNT; i++, counter++) {
+            counter = (i % skip_width) + gear_animaton_counter;
+            if (counter == gear_animaton_counter){
+                on = !on;
+            }
+            if (on) {
+                strip->setPixelColor(i, color);
+            } else {
+                strip->setPixelColor(i, external_strip.Color(0, 0, 0));
+            }
+            //strip->show();
+            //delay(20);
+        }
+        strip->show();
+        delay(wait_ms);
+    }
+}
+
 void setup()
 {
     // These lines are specifically to support the Adafruit Trinket 5V 16 MHz.
@@ -269,9 +310,9 @@ void setup()
     pinMode(BUTTON_PIN, INPUT_PULLUP);
 
     // Initialize the internal strip
-    internal_strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
-    internal_strip.show();            // Turn OFF all pixels ASAP
-    internal_strip.setBrightness(INTERNAL_BRIGHTNESS);
+    // internal_strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
+    // internal_strip.show();            // Turn OFF all pixels ASAP
+    // internal_strip.setBrightness(INTERNAL_BRIGHTNESS);
 
     // Initialize the external strip
     external_strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
@@ -297,23 +338,22 @@ void loop()
     // Individual LED animations should be as short as possible to allow changing modes
     switch (mode_index) {
         case 0:
-            //ColorWipe(&internal_strip, internal_strip.Color(255,   0,   0), 10); // Red
-            ColorWipe(&external_strip, external_strip.Color(255,   0,   0), 10); // Red
+            ColorWipe(&external_strip, external_strip.Color(255,   0,   0), 10); // Red            
             break;
         case 1:
-            //ColorWipe(&internal_strip, internal_strip.Color(  0, 255,   0), 10); // Green
             ColorWipe(&external_strip, external_strip.Color(0, 255,   0), 10); // Green
             break;
         case 2:
-            //ColorWipe(&internal_strip, internal_strip.Color(  0,   0, 255), 10); // Blue
             ColorWipe(&external_strip, external_strip.Color(0,   0, 255), 10); // Blue
             break;
         case 3:
-            //ColorWipe(&internal_strip, internal_strip.Color(  255,   255,   255), 10); // (RGB white)
             ColorWipe(&external_strip, external_strip.Color(  255,   255,   255), 10); // (RGB white)
             break;
         case 4:
             Rainbow(&external_strip, 5);
+            break;
+        case 5:
+            Gears(&external_strip,external_strip.Color(  255,   0,   0), 100);
             break;
         default: 
             Serial.println("Exceeded mode! Check implementation.");
