@@ -48,7 +48,7 @@ Adafruit_NeoPixel external_strip(EXTERNAL_LED_COUNT, EXTERNAL_LED_PIN, NEO_GRB +
 
 
 int mode_index = 0;             //!< variable to loop through different modes
-const int NUMBER_OF_MODES = 6;  //!< number of modes
+const int NUMBER_OF_MODES = 7;  //!< number of modes
 
 
 //! Fill strip pixels one after another with a color. Strip is NOT cleared first.
@@ -267,21 +267,24 @@ void Gears(Adafruit_NeoPixel* strip, uint32_t color, int wait_ms)
     if (nullptr == strip) {
         return;
     }
-    // set eyes to the color
-    for (int i = EXTERNAL_INFINITY_MIRROR_LED_COUNT; i < EXTERNAL_INFINITY_MIRROR_LED_COUNT + (EXTERNAL_EYE_LED_COUNT*2); i++) {
+    // Set eyes to the given color
+    for (int i = EXTERNAL_INFINITY_MIRROR_LED_COUNT; 
+        i < EXTERNAL_INFINITY_MIRROR_LED_COUNT + (EXTERNAL_EYE_LED_COUNT*2); 
+        i++) 
+    {
         strip->setPixelColor(i, color);
     }
     strip->show();
-        
+    
     const int skip_width = 5; //!< how many leds shall be skipped
-    unsigned int counter = 0;
-    //unsigned int gear_animaton_counter = 6;
-    bool on = false;
-    // only do in infinity mirror
-    for ( unsigned int gear_animaton_counter = 0; gear_animaton_counter < 10; gear_animaton_counter++){
-        for (int i = 0; i < EXTERNAL_INFINITY_MIRROR_LED_COUNT; i++, counter++) {
-            counter = (i % skip_width) + gear_animaton_counter;
-            if (counter == gear_animaton_counter){
+    // Only do in infinity mirror
+    for ( unsigned int gear_animaton_counter = 0; 
+          gear_animaton_counter < (skip_width*2); 
+          gear_animaton_counter++){
+        bool on = gear_animaton_counter<skip_width?true:false;
+        //Serial.println(gear_animaton_counter);
+        for (int i = 0; i < EXTERNAL_INFINITY_MIRROR_LED_COUNT; i++) {
+           if ( ((skip_width*2)+ i - gear_animaton_counter) % skip_width == 0){
                 on = !on;
             }
             if (on) {
@@ -289,8 +292,6 @@ void Gears(Adafruit_NeoPixel* strip, uint32_t color, int wait_ms)
             } else {
                 strip->setPixelColor(i, external_strip.Color(0, 0, 0));
             }
-            //strip->show();
-            //delay(20);
         }
         strip->show();
         delay(wait_ms);
@@ -353,7 +354,10 @@ void loop()
             Rainbow(&external_strip, 5);
             break;
         case 5:
-            Gears(&external_strip,external_strip.Color(  255,   0,   0), 100);
+            Gears(&external_strip,external_strip.Color(  255,   0,   0), 50);
+            break;
+        case 6:
+            Gears(&external_strip,external_strip.Color(  0,   0,   255), 50);
             break;
         default: 
             Serial.println("Exceeded mode! Check implementation.");
