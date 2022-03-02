@@ -1,13 +1,16 @@
 //! Custom program to control an external WS2812b strip connected to a ESP32C3 board.
 //! Requirements: 
-//! * Board powers on in a default state mode (TBD).
-//! * LEDs on board show the state of the board and the animation mode of the external led strip.
-//! * User can press a button to toggle through different lighning modes. Board continuously loops in a mode.
+//! * Board powers on in the forst mode.
+//! * LEDs on board won't be visible as board is hidden behind infinite mirror. 
+//!   (Other possibility would have been to show the currently selected mode on the internal leds)
+//! * User can press a push button to toggle through different lighning modes. Board continuously loops though the modes.
 //!
 //! Hardware setup:
 //! Look for guidance in web on how to attach a WS2812 strip to an arduino boad. 
 //! Connect LED strip DIN wire to LED communication pin 10
-//! Animatiion code copied from RGBWstrandtest.
+//! Connect push button one side on pin4 and other side on ground of board.
+//! 63 LEDs were using ~0.4A so using a powerbar connected to boards USB-C connection and using 5V provided by board for the LEDs was working fine.
+//! Animatiion code copied from RGBWstrandtest and extended.
 
 
 // For leds
@@ -19,7 +22,6 @@
 // Pin configurations of ESP32C3 see https://www.espressif.com/sites/default/files/documentation/esp32-c3_datasheet_en.pdf
 // Name     No. Type    Power Domain    Function
 // GPIO3    8   I/O/T   VDD3P3_RTC      GPIO3, ADC1_CH3                 <- used by internal LED matrix
-// MTMS     9   I/O/T   VDD3P3_RTC      GPIO4, ADC1_CH4, FSPIHD, MTMS
 // MTDI     10  I/O/T   VDD3P3_RTC      GPIO5, ADC2_CH0, FSPIWP, MTDI   <- can use for external LED strip
 
 // Pin connected to the ESP32C3 internal LEDs
@@ -33,22 +35,23 @@
 
 // Number of LEDs attached to board
 #define INTERNAL_LED_COUNT  25
-#define EXTERNAL_INFINITY_MIRROR_LED_COUNT 53
-#define EXTERNAL_EYE_LED_COUNT 5
-#define EXTERNAL_LED_COUNT  63//53 in infinity mirror and 5 in each eye 
+#define EXTERNAL_INFINITY_MIRROR_LED_COUNT 53 //infinity mirror
+#define EXTERNAL_EYE_LED_COUNT 5              //each eye
+#define EXTERNAL_LED_COUNT  63                //mirror + two eyes
 
 // NeoPixel brightness, 0 (min) to 255 (max)
-#define INTERNAL_BRIGHTNESS 50 // Set BRIGHTNESS to about 1/5 (max = 255)
+//#define INTERNAL_BRIGHTNESS 50 // Set BRIGHTNESS to about 1/5 (max = 255)
 #define EXTERNAL_BRIGHTNESS 50 // Set BRIGHTNESS to about 1/5 (max = 255)
 
 
 // Declare our NeoPixel strip objects:
+// internl leds won't be visible because of mounting, so disable here
 //Adafruit_NeoPixel internal_strip(INTERNAL_LED_COUNT, INTERNAL_LED_PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel external_strip(EXTERNAL_LED_COUNT, EXTERNAL_LED_PIN, NEO_GRB + NEO_KHZ800);
 
 
 int mode_index = 0;             //!< variable to loop through different modes
-const int NUMBER_OF_MODES = 7;  //!< number of modes
+const int NUMBER_OF_MODES = 8;  //!< number of modes
 
 
 //! Fill strip pixels one after another with a color. Strip is NOT cleared first.
@@ -68,20 +71,6 @@ void ColorWipe(Adafruit_NeoPixel* strip, uint32_t color, int wait_ms = 0)
     }
 }
 
-// //! Display a number [0-9] with internal leds with given color
-// //! \param strip strip to be modified
-// //! \param color single 'packed' 32-bit value, which you can get by calling strip->Color(red, green, blue)
-// //! \param number one digit number [0-9]
-// void ColorNumber(Adafruit_NeoPixel* strip, uint32_t color, int number) 
-// {
-//     if (nullptr == strip) {
-//         return;
-//     }
-//     for(int i=0; i<strip->numPixels(); i++) {   // For each pixel in strip...
-//         strip->setPixelColor(i, color);         //  Set pixel's color (in RAM)
-//         strip->show();                          //  Update strip to match
-//     }
-// }
 
 //! Displays a rainbow over pixels and a moving white strip
 //! \param strip strip to be modified
@@ -298,6 +287,71 @@ void Gears(Adafruit_NeoPixel* strip, uint32_t color, int wait_ms)
     }
 }
 
+
+//! Show leds pulsing a bit like a haert beat
+//! \param strip strip to be modified
+//! \param r, g, b color aspect between [0,1] to be shown during animation
+//! \param wait_ms speed for animation
+void HeartBeat(Adafruit_NeoPixel* strip, float r, float g, float b, int wait_ms)
+{
+    if (nullptr == strip) {
+        return;
+    }
+    
+    bool reverse = false;
+    int mode = 0;
+    for (int j = 0; mode < 4; ) {
+
+        float factor = j/100;
+        // j is the percentage of th individual colors
+        for (int i = 0; i < EXTERNAL_LED_COUNT; i++) {           
+            strip->setPixelColor(i, external_strip.Color(r * factor, g * factor, b * factor));
+        }
+        strip->show();
+        delay(wait_ms);
+
+        // Now prepare j to count up to 100 (mode 0) 
+        // then nown to 50 (mode1) then up to 100 (mode 3)
+        // and then down to 0 again (mode4)
+        switch (mode) {
+            case 0:
+                if ( j <= 100) {
+                    // count up to 100
+                    j++;
+                } else {
+                    // switch mode
+                    mode = 1;
+                    j--;
+                }
+                break;
+            case 1:
+                if (j>=50) {
+                    j--;
+                } else {
+                    mode = 2;
+                    j++;
+                }
+                break;
+            case 2:
+                if (j<=100) {
+                    j++;
+                } else {
+                    mode = 3;
+                    j--;
+                }
+                break;
+            case 3:
+                if (j>0) {
+                    j--;
+                } else {
+                    // Exit for loop
+                    mode = 4;
+                }
+        }
+        
+    }
+}
+
 void setup()
 {
     // These lines are specifically to support the Adafruit Trinket 5V 16 MHz.
@@ -359,6 +413,8 @@ void loop()
         case 6:
             Gears(&external_strip,external_strip.Color(  0,   0,   255), 50);
             break;
+        case 7:
+            HeartBeat(&external_strip, 1.0, 0.0, 0.0, 50);
         default: 
             Serial.println("Exceeded mode! Check implementation.");
     }
