@@ -51,7 +51,7 @@ Adafruit_NeoPixel external_strip(EXTERNAL_LED_COUNT, EXTERNAL_LED_PIN, NEO_GRB +
 
 
 int mode_index = 0;             //!< variable to loop through different modes
-const int NUMBER_OF_MODES = 8;  //!< number of modes
+const int NUMBER_OF_MODES = 9;  //!< number of modes
 
 
 //! Fill strip pixels one after another with a color. Strip is NOT cleared first.
@@ -288,7 +288,7 @@ void Gears(Adafruit_NeoPixel* strip, uint32_t color, int wait_ms)
 }
 
 
-//! Show leds pulsing a bit like a haert beat
+//! Show leds pulsing like a haert beat
 //! \param strip strip to be modified
 //! \param r, g, b color aspect between [0,1] to be shown during animation
 //! \param wait_ms speed for animation
@@ -297,58 +297,63 @@ void HeartBeat(Adafruit_NeoPixel* strip, float r, float g, float b, int wait_ms)
     if (nullptr == strip) {
         return;
     }
-    
-    bool reverse = false;
-    int mode = 0;
-    for (int j = 0; mode < 4; ) {
 
-        float factor = j/100;
-        // j is the percentage of th individual colors
-        for (int i = 0; i < EXTERNAL_LED_COUNT; i++) {           
-            strip->setPixelColor(i, external_strip.Color(r * factor, g * factor, b * factor));
-        }
+    for(int j=100; j<256; j+=2) { // Ramp up from 0 to 255
+        // Fill entire strip with white at gamma-corrected brightness level 'j':
+        strip->fill(strip->Color(r * strip->gamma8(j), g * strip->gamma8(j), b * strip->gamma8(j)));
         strip->show();
         delay(wait_ms);
+    }
 
-        // Now prepare j to count up to 100 (mode 0) 
-        // then nown to 50 (mode1) then up to 100 (mode 3)
-        // and then down to 0 again (mode4)
-        switch (mode) {
-            case 0:
-                if ( j <= 100) {
-                    // count up to 100
-                    j++;
-                } else {
-                    // switch mode
-                    mode = 1;
-                    j--;
-                }
-                break;
-            case 1:
-                if (j>=50) {
-                    j--;
-                } else {
-                    mode = 2;
-                    j++;
-                }
-                break;
-            case 2:
-                if (j<=100) {
-                    j++;
-                } else {
-                    mode = 3;
-                    j--;
-                }
-                break;
-            case 3:
-                if (j>0) {
-                    j--;
-                } else {
-                    // Exit for loop
-                    mode = 4;
-                }
-        }
-        
+    for(int j=255; j>=180; j-=2) { // Ramp down from 255 to 127
+        strip->fill(strip->Color(r * strip->gamma8(j), g * strip->gamma8(j), b * strip->gamma8(j)));
+        strip->show();
+        delay(wait_ms);
+    }
+    for(int j=181; j<256; j+=2) { // Ramp up from 128 to 255
+        // Fill entire strip with white at gamma-corrected brightness level 'j':
+        strip->fill(strip->Color(r * strip->gamma8(j), g * strip->gamma8(j), b * strip->gamma8(j)));
+        strip->show();
+        delay(wait_ms);
+    }
+    for(int j=255; j>=100; j-=2) { // Ramp down from 255 to 0
+        strip->fill(strip->Color(r * strip->gamma8(j), g * strip->gamma8(j), b * strip->gamma8(j)));
+        strip->show();
+        delay(wait_ms);
+    }
+}
+
+//! Show leds pulsing like a haert beat
+//! \param strip strip to be modified
+//! \param r, g, b color aspect between [0,1] to be shown during animation
+//! \param wait_ms speed for animation
+void Flash(Adafruit_NeoPixel* strip, uint32_t color, int wait_ms)
+{
+    if (nullptr == strip) {
+        return;
+    }
+
+    // Set eyes to constant color
+    for (int i = EXTERNAL_INFINITY_MIRROR_LED_COUNT; 
+        i < EXTERNAL_INFINITY_MIRROR_LED_COUNT + (EXTERNAL_EYE_LED_COUNT*2); 
+        i++) {
+        strip->setPixelColor(i, color);
+    }
+    
+    // Set all infinity mirror leds to off
+    for (int i = 0; i < EXTERNAL_INFINITY_MIRROR_LED_COUNT; i++) {
+        strip->setPixelColor(i, external_strip.Color(  0,   0,   0));
+    }
+    strip->show();
+    
+    // Now shoot a flash along the infinite mirror
+    strip->setPixelColor(0, color);
+    strip->show();
+    for (int i = 0; i < EXTERNAL_INFINITY_MIRROR_LED_COUNT-1; i++) {
+        strip->setPixelColor(i, external_strip.Color(  0,   0,   0));
+        strip->setPixelColor(i+1, color);
+        strip->show();
+        delay(wait_ms);
     }
 }
 
@@ -372,7 +377,7 @@ void setup()
     // Initialize the external strip
     external_strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
     external_strip.show();            // Turn OFF all pixels ASAP
-    external_strip.setBrightness(EXTERNAL_BRIGHTNESS);
+    external_strip.setBrightness(EXTERNAL_BRIGHTNESS); 
 }
 
 void loop()
@@ -408,13 +413,17 @@ void loop()
             Rainbow(&external_strip, 5);
             break;
         case 5:
-            Gears(&external_strip,external_strip.Color(  255,   0,   0), 50);
+            Gears(&external_strip, external_strip.Color(  255,   0,   0), 50);
             break;
         case 6:
-            Gears(&external_strip,external_strip.Color(  0,   0,   255), 50);
+            Gears(&external_strip, external_strip.Color(  0,   0,   255), 50);
             break;
         case 7:
-            HeartBeat(&external_strip, 1.0, 0.0, 0.0, 50);
+            HeartBeat(&external_strip, 1.0, 0.0, 0.0, 0);
+            break;
+        case 8:
+            Flash(&external_strip, external_strip.Color(  255,   0,   0), 7);
+            break;
         default: 
             Serial.println("Exceeded mode! Check implementation.");
     }
