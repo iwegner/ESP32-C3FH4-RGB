@@ -422,7 +422,7 @@ void loop()
             HeartBeat(&external_strip, 1.0, 0.0, 0.0, 0);
             break;
         case 8:
-            Flash(&external_strip, external_strip.Color(  255,   0,   0), 7);
+            Flash(&external_strip, external_strip.Color(  120,   0,   255), 7);
             break;
         default: 
             Serial.println("Exceeded mode! Check implementation.");
