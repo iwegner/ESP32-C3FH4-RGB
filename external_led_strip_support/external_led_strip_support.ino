@@ -1,16 +1,18 @@
-//! Custom program to control an external WS2812b strip connected to a ESP32C3 board.
+//! This is a programm used for a carnival setup consisting of an infinite mirrow and a mask.
+//! Both parts are connected to each other with one sequentially chain of WS2812b LEDs.
+//! The following program controls the WS2812b strip which gets connected to an ESP32C3 board.
 //! Requirements: 
-//! * Board powers on in the forst mode.
-//! * LEDs on board won't be visible as board is hidden behind infinite mirror. 
+//! * Program shall consist of several led color and animation modes.
+//! * Board internal LEDs should not light up as board is hidden behind infinite mirror. 
 //!   (Other possibility would have been to show the currently selected mode on the internal leds)
-//! * User can press a push button to toggle through different lighning modes. Board continuously loops though the modes.
+//! * User can press a push button to toggle through different lighning modes. Board continuously loops though modes.
 //!
 //! Hardware setup:
 //! Look for guidance in web on how to attach a WS2812 strip to an arduino boad. 
 //! Connect LED strip DIN wire to LED communication pin 10
 //! Connect push button one side on pin4 and other side on ground of board.
 //! 63 LEDs were using ~0.4A so using a powerbar connected to boards USB-C connection and using 5V provided by board for the LEDs was working fine.
-//! Animatiion code copied from RGBWstrandtest and extended.
+//! Animatiion code copied from RGBWstrandtest and extended to the requirements mentioned above.
 
 
 // For leds
@@ -323,7 +325,7 @@ void HeartBeat(Adafruit_NeoPixel* strip, float r, float g, float b, int wait_ms)
     }
 }
 
-//! Show leds pulsing like a haert beat
+//! Show leds flashing
 //! \param strip strip to be modified
 //! \param r, g, b color aspect between [0,1] to be shown during animation
 //! \param wait_ms speed for animation
