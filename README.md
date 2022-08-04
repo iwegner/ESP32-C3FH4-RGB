@@ -19,7 +19,7 @@ to Additional Boards Manager URLs in Arduino IDE Files / Preferences.
 * Install ESP32 Digital RGB LED Drivers and Adafruit NeoPixel via option tools / Manage Libraries in Arduino IDE.
 * Setup connection to connect to Board ESP32C3 Dev and com port which is assocuiated to USB Serial Device, not jtag (see Device Manager on Win10). 
 Other settings see 
-![settings] (https://github.com/iwegner/ESP32-C3FH4-RGB/blob/main/resources/settings.jpg "settings")
+![settings](https://github.com/iwegner/ESP32-C3FH4-RGB/blob/main/resources/settings.jpg)
 
 ## Upload sketch from Arduino IDE:
 Hold down B button on board, press R button and release again but keep on pressing B, trigger Arduino IDE to upload sketch, keep B pressed until Arduino IDE says that it's connected. Then you can release B button. After a while I experienced that you just can trigger the upload button in Arduino IDE and it resets the board, uploads the hex file and restarts the board so you don't have to do anything! Use first approach first an see after you checked that it works.
