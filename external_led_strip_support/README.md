@@ -71,9 +71,7 @@ Next was the ESP32C3 program itself. We had some requirements for different mode
 
 Here is a video showing the different illumination modes:
 
-<video width="320" height="240" controls>
-  <source src="https://github.com/iwegner/ESP32-C3FH4-RGB/blob/main/resources/video/IMG_4817.mov" type="video/mp4">
-</video>
+https://github.com/iwegner/ESP32-C3FH4-RGB/blob/main/resources/video/IMG_4817.mov
 
 
 ## Wall Hook
