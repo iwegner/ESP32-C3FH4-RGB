@@ -66,7 +66,10 @@ Final result of the mask featuring the LEDs:
 
 We then electrically attached the mask to the corslet, added some cushioning into the mask, and attached belts to both so they can be easily put on and off. A regular 5V powerbar was good enough to power up the leds without getting warm.
 
-Next was the ESP32C3 program itself. We had some requirements for different modes but had fun testing a lot as well. See documentation in the [code](external_led_strip_support.ino) as well.
+## Programming ESP32C3
+Next was the ESP32C3 program itself. We had some requirements for different modes but had fun testing a lot as well. See documentation in the [code](external_led_strip_support.ino).
+Here is a video showing the different illumination modes:
+<img src="../resources/IMG_4817.mov" width="1200" />
 
 
 ## Wall Hook
