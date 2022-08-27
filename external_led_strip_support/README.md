@@ -46,11 +46,12 @@ He used a 3D scan of his head that we captured once using an iPhone XR and some 
 
 <img src="../resources/IMG_4701.jpg" width="450" />
 
-We used white 4mm Depron foam I had lying around to create a good contrast for the eyes.
+We used white 4mm Depron foam I had lying around to create a good contrast for the eyes. 
+We also tried using a 3D print for this but this one didn't carry the LEDs good enough so we switched back to foam. Also, the foam is better to diffuse the LED light.
 
 <img src="../resources/IMG_4716.jpg" width="450" />
 
- Also we were able to hide some WS2812b LEDs under the foam.
+See the following image on how we assembled some LEDs inside of the eyes / eyebrows. To also hide the real eyes behind the mask, we glued some black stocking cloth using hot glue in the inside of the mask.
 
 <img src="../resources/IMG_4728.jpg" width="450" />
 
@@ -58,8 +59,11 @@ Final result of the mask featuring the LEDs:
 
 <img src="../resources/IMG_4735.jpg" width="450" />
 
-
 [STL of the mask](../resources/stl/mask.stl) 
+
+We then electrically attached the mask to the corslet, added some cushioning into the mask, and attached belts to both so they can be easily put on and off. A regular 5V powerbar was good enough to power up the leds without getting warm.
+
+Next was the ESP32C3 program itself. We had some requirements for different modes but had fun testing a lot as well. See documentation in the [code](external_led_strip_support.ino) as well.
 
 
 ## Wall Hook
