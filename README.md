@@ -5,12 +5,12 @@ I wanted to add more details than originally provided by 01Spsce.
 Information was collected while bringing the board to life. 
 Then I wanted to add a program which controls an external strip of WS2812b LEDs connected to the board.
 This stip is an electrical component in a future hero costume for carnival which my son wanted. 
-See further docu on this here: [external_led_strip_support_link](external_led_strip_support/README.md).
+See further docu on this here: [external_led_strip_support docu](external_led_strip_support/README.md).
 
 <img src="resources/HeroCostume_thumb.JPG" width="450" height="700" />
 
 ## USB driver for the board
-[see Zadig driver](https://zadig.akeo.ie/)
+See [Zadig](https://zadig.akeo.ie/) driver.
 
 ## General Flashing Instructions:
 * Install driver with zadig as mentioned above.
