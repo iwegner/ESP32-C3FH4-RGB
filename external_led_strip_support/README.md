@@ -2,6 +2,8 @@
 
 My son was asking for some help on a carnival costume. He wanted to build a future hero amor an I proposed LEDs for some effects. In thge past he has build masks out of foam and cardboard. This time we wanted to use the 3D printer so see how it performs on this. 
 
+<img src="../resources/HeroCostume.JPG" width="450" height="700" />
+
 We started with a small ESP32C3 as the board needed to be very light weight. The internal WS2812b leds were helping in the beginning to be sure the code works. Once we switched over to the external led strip the board leds werenÄt used any longer. We thought about attaching the board to the corslet so it still remains visible, but due to time constraints this was canceled. 
 
 The costume consists of a corslet and a helmet. For the corslet he chose to have a infinite mirror design which gives a fantastic futuristic look. It looks like you could grab into the chest to change batteries or so ;)
