@@ -5,7 +5,7 @@ I wanted to add more details than originally provided by 01Spsce.
 Information was collected while bringing the board to life. 
 Then I wanted to add a program which controls an external strip of WS2812b LEDs connected to the board.
 This stip is an electrical component in a future hero costume for carnival which my son wanted. 
-![Hero-Costume](https://github.com/iwegner/ESP32-C3FH4-RGB/blob/main/resources/HeroCostume_thumb.JPG =450x700)
+<img src="https://github.com/iwegner/ESP32-C3FH4-RGB/blob/main/resources/HeroCostume_thumb.JPG" width="450" height="700" />
 
 ## USB driver for the board
 [see Zadig driver](https://zadig.akeo.ie/)
