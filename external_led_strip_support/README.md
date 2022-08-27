@@ -70,7 +70,11 @@ We then electrically attached the mask to the corslet, added some cushioning int
 Next was the ESP32C3 program itself. We had some requirements for different modes but had fun testing a lot as well. See documentation in the [code](external_led_strip_support.ino).
 
 Here is a video showing the different illumination modes:
-![](../resources/video/IMG_4817.mov)
+
+<video width="800" controls>
+  <source src="https://github.com/iwegner/ESP32-C3FH4-RGB/blob/main/resources/video/IMG_4817.mov" type="video/mp4">
+</video>
+
 
 ## Wall Hook
 The entire gear can be hung up on a wall using the [wall hook 3d print](../resources/stl/wall_hook.stl).
