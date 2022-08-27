@@ -2,11 +2,13 @@
 
 My son was asking for some help on a carnival costume. He wanted to build a future hero amor an I proposed LEDs for some effects. In thge past he has build masks out of foam and cardboard. This time we wanted to use the 3D printer so see how it performs on this. 
 
-The costme consists of a corslet and a helmet. For the corslet he chose to have a infinite mirror design which gives a fantastic futuristic look. It looks like you could grab into the chest to change batteries or so ;)
+We started with a small ESP32C3 as the board needed to be very light weight. The internal WS2812b leds were helping in the beginning to be sure the code works. Once we switched over to the external led strip the board leds werenÄt used any longer. We thought about attaching the board to the corslet so it still remains visible, but due to time constraints this was canceled. 
+
+The costume consists of a corslet and a helmet. For the corslet he chose to have a infinite mirror design which gives a fantastic futuristic look. It looks like you could grab into the chest to change batteries or so ;)
 For the helmet he chose to go with a poligonal design including LEDs to pick up the theme from the corslet.
 The following shows the steps we did along with the code for the ESP32C3 we used as LED controller.
 
-## Corslet / infinite mirror
+## Corslet / Infinite Mirror
 The mirror consists of the following layers (from outer to inner):
 
 * 3D printed cover. See [here](../resources/stl/ring_outer.stl) for STL.
@@ -34,6 +36,7 @@ The corslet holding the infinite mirrow consists of a 3D printed housing which a
 
 <img src="../resources/IMG_4605.jpg" width="450" />
 <img src="../resources/IMG_4615.jpg" width="450" />
+<img src="../resources/IMG_4742.jpg" width="450" />
 
 
 ## Helmet / Mask
@@ -42,7 +45,7 @@ My son designed the helmet using [Blender](https://www.blender.org).
 <img src="../resources/IMG_4636.jpg" width="450" />
 
 On e.g. Youtube you will find lots of tutorials on how to design your own mask using a mirror technique where you only need to design one side of the mask and it will be automatically be mirrored to the other side.
-He used a 3D scan of his head that we captured once using an iPhone XR and some frontal and side 2D images from his face. It took quite some time but we were lucky that we only had to print out the stl one time! 
+He used a 3D scan of his head that we captured once using an iPhone XR and some frontal and side 2D images from his face. It took quite some time but we were lucky that we only had to print out the stl one time! Using low speed to enhance quality it took 28h!
 
 <img src="../resources/IMG_4701.jpg" width="450" />
 
