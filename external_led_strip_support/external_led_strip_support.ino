@@ -34,7 +34,6 @@
 // Pin for mode changing button
 #define BUTTON_PIN 4
 
-
 // Number of LEDs attached to board
 #define INTERNAL_LED_COUNT  25
 #define EXTERNAL_INFINITY_MIRROR_LED_COUNT 53 //infinity mirror
@@ -52,8 +51,8 @@
 Adafruit_NeoPixel external_strip(EXTERNAL_LED_COUNT, EXTERNAL_LED_PIN, NEO_GRB + NEO_KHZ800);
 
 
-int mode_index = 0;             //!< variable to loop through different modes
-const int NUMBER_OF_MODES = 9;  //!< number of modes
+int mode_index = 0;              //!< variable to loop through different modes
+const int NUMBER_OF_MODES = 10;  //!< number of modes
 
 
 //! Fill strip pixels one after another with a color. Strip is NOT cleared first.
@@ -216,7 +215,33 @@ void RainbowFade2White(Adafruit_NeoPixel* strip, int wait_ms, int rainbow_loops,
     //delay(500); // Pause 1/2 second
 }
 
-//! Showing rainbow colors
+//! Showing rainbow colors over time but all leds the same color
+//! \param strip strip to be modified
+//! \param wait_ms speed for animation
+void RainbowFull(Adafruit_NeoPixel* strip, int wait_ms) 
+{
+    if (nullptr == strip) {
+        return;
+    }
+
+    // Hue of first pixel runs 'rainbow_loops' complete loops through the color
+    // wheel. Color wheel has a range of 65536 but it's OK if we roll over, so
+    // just count from 0 to rainbow_loops*65536, using steps of 256 so we
+    // advance around the wheel at a decent clip.
+    for(uint32_t pixel_hue_over_time = 0; pixel_hue_over_time < 65536; pixel_hue_over_time += 256) {
+        for(int i = 0; i < strip->numPixels(); i++) { // For each pixel in strip...
+            // strip.ColorHSV() can take 1 or 3 arguments: a hue (0 to 65535) or
+            // optionally add saturation and value (brightness) (each 0 to 255).
+            // Here we're using just the three-argument variant, though the
+            // second value (saturation) is a constant 255.
+            strip->setPixelColor(i, strip->gamma32(strip->ColorHSV(pixel_hue_over_time, 255, 255)));
+        }
+        strip->show();
+        delay(wait_ms);
+    }
+}
+
+//! Showing rainbow colors devided up over the led strip
 //! \param strip strip to be modified
 //! \param wait_ms speed for animation
 void Rainbow(Adafruit_NeoPixel* strip, int wait_ms) 
@@ -325,11 +350,12 @@ void HeartBeat(Adafruit_NeoPixel* strip, float r, float g, float b, int wait_ms)
     }
 }
 
-//! Show leds flashing
+//! Show leds flashing in a circle
 //! \param strip strip to be modified
 //! \param r, g, b color aspect between [0,1] to be shown during animation
+//! \param background_color color of all leds while the circle shows
 //! \param wait_ms speed for animation
-void Flash(Adafruit_NeoPixel* strip, uint32_t color, int wait_ms)
+void CircleFlash(Adafruit_NeoPixel* strip, uint32_t color, uint32_t background_color, int wait_ms)
 {
     if (nullptr == strip) {
         return;
@@ -344,7 +370,7 @@ void Flash(Adafruit_NeoPixel* strip, uint32_t color, int wait_ms)
     
     // Set all infinity mirror leds to off
     for (int i = 0; i < EXTERNAL_INFINITY_MIRROR_LED_COUNT; i++) {
-        strip->setPixelColor(i, external_strip.Color(  0,   0,   0));
+        strip->setPixelColor(i, background_color);
     }
     strip->show();
     
@@ -352,7 +378,7 @@ void Flash(Adafruit_NeoPixel* strip, uint32_t color, int wait_ms)
     strip->setPixelColor(0, color);
     strip->show();
     for (int i = 0; i < EXTERNAL_INFINITY_MIRROR_LED_COUNT-1; i++) {
-        strip->setPixelColor(i, external_strip.Color(  0,   0,   0));
+        strip->setPixelColor(i, background_color);
         strip->setPixelColor(i+1, color);
         strip->show();
         delay(wait_ms);
@@ -384,11 +410,12 @@ void setup()
 
 void loop()
 {
-
     // Read button state to change mode
     byte buttonState = digitalRead(BUTTON_PIN);
     if (buttonState == LOW) {
         Serial.println("Changing mode to " + mode_index);
+        // slow down to take care of double inputs
+        delay(250);
         mode_index++;
         
         // Loop through modes
@@ -400,31 +427,34 @@ void loop()
     // Individual LED animations should be as short as possible to allow changing modes
     switch (mode_index) {
         case 0:
-            ColorWipe(&external_strip, external_strip.Color(255,   0,   0), 10); // Red            
+            RainbowFull(&external_strip, 50);
             break;
         case 1:
-            ColorWipe(&external_strip, external_strip.Color(0, 255,   0), 10); // Green
-            break;
-        case 2:
-            ColorWipe(&external_strip, external_strip.Color(0,   0, 255), 10); // Blue
-            break;
-        case 3:
-            ColorWipe(&external_strip, external_strip.Color(  255,   255,   255), 10); // (RGB white)
-            break;
-        case 4:
             Rainbow(&external_strip, 5);
             break;
+        case 2:
+            ColorWipe(&external_strip, external_strip.Color(255,   0,   0), 10); // Red            
+            break;
+        case 3:
+            ColorWipe(&external_strip, external_strip.Color(0, 255,   0), 10); // Green
+            break;
+        case 4:
+            ColorWipe(&external_strip, external_strip.Color(0,   0, 255), 10); // Blue
+            break;
         case 5:
-            Gears(&external_strip, external_strip.Color(  255,   0,   0), 50);
+            ColorWipe(&external_strip, external_strip.Color(  255,   255,   255), 10); // (RGB white)
             break;
         case 6:
-            Gears(&external_strip, external_strip.Color(  0,   0,   255), 50);
+            Gears(&external_strip, external_strip.Color(  255,   0,   0), 50);
             break;
         case 7:
-            HeartBeat(&external_strip, 1.0, 0.0, 0.0, 0);
+            Gears(&external_strip, external_strip.Color(  0,   0,   255), 50);
             break;
         case 8:
-            Flash(&external_strip, external_strip.Color(  120,   0,   255), 7);
+            HeartBeat(&external_strip, 1.0, 0.0, 0.0, 4);
+            break;
+        case 9:
+            CircleFlash(&external_strip, external_strip.Color(255, 0, 0), external_strip.Color(20, 20, 20), 15);
             break;
         default: 
             Serial.println("Exceeded mode! Check implementation.");
