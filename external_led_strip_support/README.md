@@ -78,3 +78,8 @@ https://github.com/iwegner/ESP32-C3FH4-RGB/blob/main/resources/video/IMG_4817.mo
 The entire gear can be hung up on a wall using the [wall hook 3d print](../resources/stl/wall_hook.stl).
 
 <img src="../resources/IMG_4913.jpg" width="450" />
+
+## Progress
+The following year some Mandalorian Beskar Armor parts from Thingiverse were scaled to the right size and fastened to the costume using sticky valcro.
+
+
