@@ -52,7 +52,7 @@ Adafruit_NeoPixel external_strip(EXTERNAL_LED_COUNT, EXTERNAL_LED_PIN, NEO_GRB +
 
 
 int mode_index = 0;              //!< variable to loop through different modes
-const int NUMBER_OF_MODES = 10;  //!< number of modes
+const int NUMBER_OF_MODES = 9;   //!< number of modes
 
 
 //! Fill strip pixels one after another with a color. Strip is NOT cleared first.
@@ -427,7 +427,7 @@ void loop()
     // Individual LED animations should be as short as possible to allow changing modes
     switch (mode_index) {
         case 0:
-            RainbowFull(&external_strip, 50);
+            RainbowFull(&external_strip, 35);
             break;
         case 1:
             Rainbow(&external_strip, 5);
@@ -453,9 +453,9 @@ void loop()
         case 8:
             HeartBeat(&external_strip, 1.0, 0.0, 0.0, 4);
             break;
-        case 9:
-            CircleFlash(&external_strip, external_strip.Color(255, 0, 0), external_strip.Color(20, 20, 20), 15);
-            break;
+        // case 9:
+        //     CircleFlash(&external_strip, external_strip.Color(255, 0, 0), external_strip.Color(20, 20, 20), 15);
+        //     break;
         default: 
             Serial.println("Exceeded mode! Check implementation.");
     }
