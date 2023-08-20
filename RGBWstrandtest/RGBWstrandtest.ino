@@ -1,16 +1,12 @@
-// NeoPixel test program showing use of the WHITE channel for RGBW
-// pixels only (won't look correct on regular RGB NeoPixel strips).
-
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
  #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
 #endif
 
-// Which pin on the Arduino is connected to the NeoPixels?
-// On a Trinket or Gemma we suggest changing this to 1:
+// Which pin on is connected to the NeoPixels?
 #define LED_PIN    8
 
-// How many NeoPixels are attached to the Arduino?
+// How many NeoPixels are attached?
 #define LED_COUNT  25
 
 // NeoPixel brightness, 0 (min) to 255 (max)
@@ -28,12 +24,9 @@ Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 
 void setup() {
-  // These lines are specifically to support the Adafruit Trinket 5V 16 MHz.
-  // Any other board, you can remove this part (but no harm leaving it):
-#if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
-  clock_prescale_set(clock_div_1);
-#endif
-  // END of Trinket-specific code.
+  // optional console output for validation (set Tools->USB CDC on Boot->Enabled)
+  Serial.begin(115200);
+  Serial.println("ESP32-C3FH4-RGB - I am ALIVE!");
 
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
   strip.show();            // Turn OFF all pixels ASAP
@@ -42,11 +35,10 @@ void setup() {
 
 void loop() {
   // Fill along the length of the strip in various colors...
-  colorWipe(strip.Color(255,   0,   0), 50); // Red
-  colorWipe(strip.Color(  0, 255,   0), 50); // Green
-  colorWipe(strip.Color(  0,   0, 255), 50); // Blue
-  colorWipe(strip.Color(  255,   255,   255), 50); // (RGB white)
-  //colorWipe(strip.Color(  0,   0,   0, 255), 50); // True white (not RGB white)
+  colorWipe(strip.Color(255,   0,   0)     , 50); // Red
+  colorWipe(strip.Color(  0, 255,   0)     , 50); // Green
+  colorWipe(strip.Color(  0,   0, 255)     , 50); // Blue
+  colorWipe(strip.Color(255, 255, 255), 50); // not RGB white
 
   whiteOverRainbow(75, 5);
 

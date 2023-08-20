@@ -4,6 +4,8 @@
 #endif
 
 #define PIN 8
+// How many NeoPixels are attached
+#define LED_COUNT  25
 
 // How many NeoPixels are attached to the Arduino?
 #define LED_COUNT  25
@@ -24,11 +26,9 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(LED_COUNT, PIN, NEO_GRB + NEO_KHZ800
 // on a live circuit...if you must, connect GND first.
 
 void setup() {
-  // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
-  #if defined (__AVR_ATtiny85__)
-    if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
-  #endif
-  // End of trinket special code
+  // optional console output for validation (set Tools->USB CDC on Boot->Enabled)
+  Serial.begin(115200);
+  Serial.println("ESP32-C3FH4-RGB - I am ALIVE!");
 
   strip.begin();
   strip.setBrightness(50);
